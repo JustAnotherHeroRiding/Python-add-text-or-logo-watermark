@@ -1,5 +1,7 @@
 from PIL import Image,ImageTk,ImageDraw,ImageFont
 import tkinter as tk
+import tkinter.ttk as ttk
+from ttkthemes import ThemedTk
 from tkinter.filedialog import askopenfilename
 
 
@@ -28,15 +30,20 @@ FONT_NAME = "Courier"
 #Check out if there are any bugs 
 
 
-window = tk.Tk()
-window.title("Pomodoro")
+window = ThemedTk()
+
+window.title("WaterMarker")
+window.set_theme('breeze')
 #Lowered padding
 window.geometry("900x600")
-window.config(bg="#0F3D3E")
+window.config(bg="#0F3057")
 
 
-title_label = tk.Label(text="WaterMarker", fg=GREEN, bg="#0F3D3E", font=(FONT_NAME, 50))
-title_label.grid(column=1, row=0)
+
+
+
+title_label = tk.Label(text="WaterMarker", fg="#E7E7DE", bg="#0F3057", font=(FONT_NAME, 50))
+title_label.grid(column=1, row=0, padx=15,pady=20)
 
 
 #canvas = tk.Canvas(width=800, height=480, bg= "#0F3D3E", highlightthickness=0)
@@ -47,12 +54,18 @@ title_label.grid(column=1, row=0)
 
 
 def add_text_watermark():
-    f_types = [('Image Files',['.jpeg', '.jpg', '.png', '.gif','.tiff', '.tif', '.bmp'])]
-    filename = askopenfilename(filetypes=f_types)
-    #img = ImageTk.PhotoImage(file=filename)
-    #b2 =tk.Label(window,image=img)
-    #b2.grid(row=1,column=1)
-    add_watermark(filename, "Kiko's")
+    text = watermark_text_entry.get()
+    if len(text) == 0:
+        tk.messagebox.showerror(title= "Empty field!",message= "You shouldn't leave any fields empty!")
+    else:
+        
+        f_types = [('Image Files',['.jpeg', '.jpg', '.png', '.gif','.tiff', '.tif', '.bmp'])]
+        filename = askopenfilename(filetypes=f_types)
+        img = ImageTk.PhotoImage(file=filename)
+        b2 =tk.Label(window,image=img)
+        b2.grid(row=1,column=1)
+    
+        add_watermark(filename, text)
     
     
 
@@ -95,8 +108,10 @@ def add_image_watermark():
     
 def add_watermark_image(image, wm_image):
     # Open the original image and the watermark image
-    opened_image = Image.open(image)
-    watermark = Image.open(wm_image)
+    opened_image = Image.open(image).convert("RGBA")
+    watermark = Image.open(wm_image).convert("RGBA")
+    layer = Image.new('RGBA', opened_image.size, (0, 0, 0, 0))
+    
 
     # Get the size of the original image
     image_width, image_height = opened_image.size
@@ -114,28 +129,36 @@ def add_watermark_image(image, wm_image):
     # Resize the watermark to the calculated size
     watermark = watermark.resize((new_wm_width, new_wm_height))
 
-    # Convert both images to the RGBA mode
-    opened_image = opened_image.convert("RGBA")
-    watermark = watermark.convert("RGBA")
-
     # Calculate the position for the watermark
     x = int(image_width * 0.9)
     y = int(image_height *0.9)
+    
+    layer.paste(watermark, (x, y))
 
-    opened_image.paste(watermark,(x,y))
+    # Create a copy of the layer
+    layer2 = layer.copy()
 
-    # Show the new image
-    opened_image.show()
+    # Put alpha on the copy
+    layer2.putalpha(256)
 
+    # merge layers with mask
+    layer.paste(layer2, layer)
+
+
+    result = Image.alpha_composite(opened_image, layer)
+
+    result.show()
 
         
+watermark_text_entry = tk.Entry(width=35)
+watermark_text_entry.grid(column=0, row=1,padx=10,pady=50)
 
 upload_text_button = tk.Button(text="Add a text Watermark", highlightthickness=0, command=add_text_watermark)
-upload_text_button.grid(column=0, row=1)
+upload_text_button.grid(column=0, row=2, padx=10,pady=15)
 
 
 upload_image_button = tk.Button(text="Add a logo Watermark", highlightthickness=0, command=add_image_watermark)
-upload_image_button.grid(column=1, row=1)
+upload_image_button.grid(column=2, row=2)
 
 
 window.mainloop()
