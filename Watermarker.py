@@ -36,13 +36,13 @@ window.title("WaterMarker")
 window.set_theme('breeze')
 #Lowered padding
 window.geometry("900x600")
-window.config(bg="#0F3057")
+window.config(bg="#243763")
 
 
 
 
 
-title_label = tk.Label(text="WaterMarker", fg="#E7E7DE", bg="#0F3057", font=(FONT_NAME, 50))
+title_label = tk.Label(text="WaterMarker", fg="#E7E7DE", bg="#243763", font=(FONT_NAME, 50))
 title_label.grid(column=1, row=0, padx=15,pady=20)
 
 
@@ -97,12 +97,13 @@ def add_watermark(image, wm_text):
     
 def add_image_watermark():
     f_types = [('Image Files',['.jpeg', '.jpg', '.png', '.gif','.tiff', '.tif', '.bmp'])]
+    tk.messagebox.showinfo(title= "Notice",message= "First select the image you want to watermark then select the watermark. It should be a transparent image but non-transparent ones will be watermarked too.")
     filename = askopenfilename(filetypes=f_types)
     #Dont show the image inside the window
     #img = ImageTk.PhotoImage(file=filename)
     #b2 =tk.Label(window,image=img)
     #b2.grid(row=1,column=1)
-    watermark = "watermark.png"
+    watermark = askopenfilename(filetypes=f_types)
     add_watermark_image(filename, watermark)
     
     
@@ -150,15 +151,25 @@ def add_watermark_image(image, wm_image):
     result.show()
 
         
-watermark_text_entry = tk.Entry(width=35)
-watermark_text_entry.grid(column=0, row=1,padx=10,pady=50)
+watermark_text_entry = tk.Entry(width=20)
+watermark_text_entry.grid(column=0, row=1,padx=25,pady=50)
 
-upload_text_button = tk.Button(text="Add a text Watermark", highlightthickness=0, command=add_text_watermark)
-upload_text_button.grid(column=0, row=2, padx=10,pady=15)
+upload_text_button = tk.Button(
+    text="Add a text Watermark",
+    highlightthickness=0, 
+    command=add_text_watermark,
+    bg="#FF6E31",
+    fg="#FFEBB7")
+upload_text_button.grid(column=0, row=2, padx=25,pady=15)
 
 
-upload_image_button = tk.Button(text="Add a logo Watermark", highlightthickness=0, command=add_image_watermark)
-upload_image_button.grid(column=2, row=2)
+upload_image_button = tk.Button(
+    text="Add a logo Watermark", 
+    highlightthickness=0, 
+    command=add_image_watermark,
+    bg="#FF6E31",
+    fg="#FFEBB7")
+upload_image_button.grid(column=2, row=2,padx=25,pady=15)
 
 
 window.mainloop()
