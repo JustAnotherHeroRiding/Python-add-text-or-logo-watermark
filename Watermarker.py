@@ -61,9 +61,9 @@ def add_text_watermark():
         
         f_types = [('Image Files',['.jpeg', '.jpg', '.png', '.gif','.tiff', '.tif', '.bmp'])]
         filename = askopenfilename(filetypes=f_types)
-        img = ImageTk.PhotoImage(file=filename)
-        b2 =tk.Label(window,image=img)
-        b2.grid(row=1,column=1)
+        #img = ImageTk.PhotoImage(file=filename)
+        #b2 =tk.Label(window,image=img)
+        #b2.grid(row=1,column=1)
     
         add_watermark(filename, text)
     
