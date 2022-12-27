@@ -100,7 +100,19 @@ def add_watermark_image(image, wm_image):
 
     # Get the size of the original image
     image_width, image_height = opened_image.size
+    
+    # Calculate the size of the watermark based on the size of the original image
+    wm_width, wm_height = watermark.size
 
+    # Calculate the new width of the watermark
+    new_wm_width = int(image_width * 0.1)
+
+    # Calculate the new height of the watermark based on the aspect ratio of the original image
+    aspect_ratio = wm_height / wm_width
+    new_wm_height = int(new_wm_width * aspect_ratio)
+
+    # Resize the watermark to the calculated size
+    watermark = watermark.resize((new_wm_width, new_wm_height))
 
     # Convert both images to the RGBA mode
     opened_image = opened_image.convert("RGBA")
@@ -108,7 +120,7 @@ def add_watermark_image(image, wm_image):
 
     # Calculate the position for the watermark
     x = int(image_width * 0.9)
-    y = int(image_height  - 50)
+    y = int(image_height *0.9)
 
     opened_image.paste(watermark,(x,y))
 
